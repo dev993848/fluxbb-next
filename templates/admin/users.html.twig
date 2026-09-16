@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin: Users{% endblock %}
+
+{% block breadcrumbs_extra %}
+    <svg class="separator" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+    </svg>
+    <a href="/admin">Admin</a>
+    <svg class="separator" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+    </svg>
+    <span class="current">Users</span>
+{% endblock %}
+
+{% block body %}
+<div class="admin-layout">
+    <aside class="admin-sidebar">
+        {% include 'admin/_sidebar.html.twig' %}
+    </aside>
+
+    <div class="admin-content">
+        <div class="page-header animate-fade-in">
+            <div class="flex items-center justify-between gap-4">
+                <div>
+                    <h1>Manage Users</h1>
+                    <p>{{ users|length }} registered user(s).</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card animate-fade-in-up">
+            <div class="table-wrapper" style="border: none;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Group</th>
+                            <th>Registered</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in users %}
+                            <tr>
+                                <td><span class="badge badge-primary">#{{ u.id.toInt }}</span></td>
+                                <td><strong>{{ u.username }}</strong></td>
+                                <td class="text-muted">{{ u.email }}</td>
+                                <td><span class="badge badge-info">Group {{ u.groupId.toInt }}</span></td>
+                                <td class="text-muted">{{ u.registeredAt|date('Y-m-d') }}</td>
+                                <td class="table-actions">
+                                    <a href="/admin/users/delete/{{ u.id.toInt }}" class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Delete user {{ u.username }}? This cannot be undone.')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                        </svg>
+                                        Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr><td colspan="6" class="text-center text-muted">No users found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

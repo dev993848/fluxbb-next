@@ -1,7 +1,7 @@
 # Composer dependencies
 /vendor/
 
-# FluxBB-specific files
+# FluxBB-specific files (legacy)
 /cache/cache_*.php
 /cache/*.cache
 /cache/db_update.lock
@@ -11,3 +11,22 @@
 /img/avatars/*.jpg
 /img/avatars/*.gif
 /config.php
+
+# Environment
+.env
+.env.local
+
+# Cache & Logs
+/var/cache/*
+/var/log/*
+!/var/cache/.gitkeep
+!/var/log/.gitkeep
+
+# Docker override
+docker-compose.override.yml
+
+# IDE
+/.idea/
+.vscode/
+*.swp
+*.swo

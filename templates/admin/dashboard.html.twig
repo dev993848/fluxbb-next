@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block breadcrumbs_extra %}
+    <svg class="separator" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+    </svg>
+    <span class="current">Admin</span>
+{% endblock %}
+
+{% block body %}
+<div class="admin-layout">
+    <aside class="admin-sidebar">
+        {% include 'admin/_sidebar.html.twig' %}
+    </aside>
+
+    <div class="admin-content">
+        <div class="page-header animate-fade-in">
+            <h1>Administration</h1>
+            <p>Manage your FluxBB forum settings and content.</p>
+        </div>
+
+        <div class="card-grid animate-stagger">
+            <a href="/admin/options" class="card" style="display: block; text-decoration: none;">
+                <div class="card-body">
+                    <h3>Options</h3>
+                    <p class="text-muted">Manage forum settings and configuration.</p>
+                </div>
+            </a>
+            <a href="/admin/users" class="card" style="display: block; text-decoration: none;">
+                <div class="card-body">
+                    <h3>Users</h3>
+                    <p class="text-muted">View and manage registered users.</p>
+                </div>
+            </a>
+            <a href="/admin/groups" class="card" style="display: block; text-decoration: none;">
+                <div class="card-body">
+                    <h3>Groups</h3>
+                    <p class="text-muted">Manage user groups and their permissions.</p>
+                </div>
+            </a>
+            <a href="/admin/bans" class="card" style="display: block; text-decoration: none;">
+                <div class="card-body">
+                    <h3>Bans</h3>
+                    <p class="text-muted">IP, email, and username bans.</p>
+                </div>
+            </a>
+            <a href="/admin/permissions" class="card" style="display: block; text-decoration: none;">
+                <div class="card-body">
+                    <h3>Permissions</h3>
+                    <p class="text-muted">Forum access permissions per group.</p>
+                </div>
+            </a>
+            <a href="/admin/censoring" class="card" style="display: block; text-decoration: none;">
+                <div class="card-body">
+                    <h3>Censoring</h3>
+                    <p class="text-muted">Manage censored words.</p>
+                </div>
+            </a>
+            <a href="/admin/reports" class="card" style="display: block; text-decoration: none;">
+                <div class="card-body">
+                    <h3>Reports</h3>
+                    <p class="text-muted">View and manage reported posts.</p>
+                </div>
+            </a>
+            <a href="/admin/statistics" class="card" style="display: block; text-decoration: none;">
+                <div class="card-body">
+                    <h3>Statistics</h3>
+                    <p class="text-muted">Forum usage statistics and metrics.</p>
+                </div>
+            </a>
+            <a href="/admin/maintenance" class="card" style="display: block; text-decoration: none;">
+                <div class="card-body">
+                    <h3>Maintenance</h3>
+                    <p class="text-muted">Rebuild stats, prune topics, reindex.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

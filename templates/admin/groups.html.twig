@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin: Groups{% endblock %}
+
+{% block breadcrumbs_extra %}
+    <svg class="separator" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+    </svg>
+    <a href="/admin">Admin</a>
+    <svg class="separator" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+    </svg>
+    <span class="current">Groups</span>
+{% endblock %}
+
+{% block body %}
+<div class="admin-layout">
+    <aside class="admin-sidebar">
+        {% include 'admin/_sidebar.html.twig' %}
+    </aside>
+
+    <div class="admin-content">
+        <div class="page-header animate-fade-in">
+            <h1>Manage Groups</h1>
+            <p>Configure user groups and their permissions.</p>
+        </div>
+
+        <div class="card animate-fade-in-up">
+            <div class="table-wrapper" style="border: none;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>User Title</th>
+                            <th class="text-center">Read Board</th>
+                            <th class="text-center">Post Replies</th>
+                            <th class="text-center">Post Topics</th>
+                            <th class="text-center">Flood (sec)</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for group in groups %}
+                            <tr>
+                                <td><span class="badge badge-primary">#{{ group.g_id }}</span></td>
+                                <td><strong>{{ group.g_title }}</strong></td>
+                                <td class="text-muted">{{ group.g_user_title ?: '-' }}</td>
+                                <td class="text-center">
+                                    {% if group.g_read_board %}
+                                        <span class="badge badge-success">Yes</span>
+                                    {% else %}
+                                        <span class="badge badge-danger">No</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    {% if group.g_post_replies %}
+                                        <span class="badge badge-success">Yes</span>
+                                    {% else %}
+                                        <span class="badge badge-danger">No</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    {% if group.g_post_topics %}
+                                        <span class="badge badge-success">Yes</span>
+                                    {% else %}
+                                        <span class="badge badge-danger">No</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">{{ group.g_post_flood }}</td>
+                                <td class="table-actions">
+                                    <form method="post" action="/admin/groups" style="display:inline">
+                                        <input type="hidden" name="_csrf_token" value="{{ _csrf_token }}">
+                                        <input type="hidden" name="g_id" value="{{ group.g_id }}">
+                                        <button type="submit" class="btn btn-sm btn-secondary">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                            </svg>
+                                            Edit
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr><td colspan="8" class="text-center text-muted">No groups found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

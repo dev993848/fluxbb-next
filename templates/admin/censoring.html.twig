@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin: Censoring{% endblock %}
+
+{% block breadcrumbs_extra %}
+    <svg class="separator" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+    </svg>
+    <a href="/admin">Admin</a>
+    <svg class="separator" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+    </svg>
+    <span class="current">Censoring</span>
+{% endblock %}
+
+{% block body %}
+<div class="admin-layout">
+    <aside class="admin-sidebar">
+        {% include 'admin/_sidebar.html.twig' %}
+    </aside>
+
+    <div class="admin-content">
+        <div class="page-header animate-fade-in">
+            <h1>Censored Words</h1>
+            <p>Manage words that are automatically censored in posts.</p>
+        </div>
+
+        <div class="card animate-fade-in-up mb-8">
+            <div class="card-header">
+                <h3>Add New Censored Word</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" action="/admin/censoring">
+                    <input type="hidden" name="_csrf_token" value="{{ _csrf_token }}">
+
+                    <div class="form-inline">
+                        <div class="form-group" style="flex: 1;">
+                            <label class="form-label" for="search_for">Word to censor</label>
+                            <input type="text" id="search_for" name="search_for" class="form-input" required
+                                   placeholder="e.g., badword">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label class="form-label" for="replace_with">Replace with</label>
+                            <input type="text" id="replace_with" name="replace_with" class="form-input"
+                                   placeholder="*** (leave empty for default)">
+                        </div>
+                        <div class="form-group" style="display: flex; align-items: flex-end;">
+                            <button type="submit" class="btn btn-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+                                </svg>
+                                Add Word
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card animate-fade-in-up">
+            <div class="card-header">
+                <h3>Censored Words ({{ words|length }})</h3>
+            </div>
+            <div class="table-wrapper" style="border: none;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Search For</th>
+                            <th>Replace With</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for word in words %}
+                            <tr>
+                                <td><code>{{ word.search_for }}</code></td>
+                                <td class="text-muted">{{ word.replace_with ?: '*** (default)' }}</td>
+                                <td class="table-actions">
+                                    <a href="/admin/censoring/delete/{{ word.id }}" class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Remove this censored word?')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                        </svg>
+                                        Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr><td colspan="3" class="text-center text-muted">No censored words configured.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,366 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Method FluxBB\\\\Admin\\\\Infrastructure\\\\Controller\\\\AdminBanController\\:\\:delete\\(\\) has parameter \\$params with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Admin/Infrastructure/Controller/AdminBanController.php
+
+		-
+			message: "#^Method FluxBB\\\\Admin\\\\Infrastructure\\\\Controller\\\\AdminCensoringController\\:\\:delete\\(\\) has parameter \\$params with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Admin/Infrastructure/Controller/AdminCensoringController.php
+
+		-
+			message: "#^Short ternary operator is not allowed\\. Use null coalesce operator if applicable or consider using long ternary\\.$#"
+			count: 1
+			path: src/Admin/Infrastructure/Controller/AdminCensoringController.php
+
+		-
+			message: "#^Cannot cast mixed to string\\.$#"
+			count: 3
+			path: src/Admin/Infrastructure/Controller/AdminOptionsController.php
+
+		-
+			message: "#^Method Symfony\\\\Component\\\\HttpFoundation\\\\ParameterBag\\:\\:all\\(\\) invoked with 2 parameters, 0\\-1 required\\.$#"
+			count: 1
+			path: src/Admin/Infrastructure/Controller/AdminOptionsController.php
+
+		-
+			message: "#^Cannot access offset 'post_replies' on mixed\\.$#"
+			count: 1
+			path: src/Admin/Infrastructure/Controller/AdminPermissionsController.php
+
+		-
+			message: "#^Cannot access offset 'post_topics' on mixed\\.$#"
+			count: 1
+			path: src/Admin/Infrastructure/Controller/AdminPermissionsController.php
+
+		-
+			message: "#^Cannot access offset 'read_forum' on mixed\\.$#"
+			count: 1
+			path: src/Admin/Infrastructure/Controller/AdminPermissionsController.php
+
+		-
+			message: "#^Cannot cast mixed to int\\.$#"
+			count: 5
+			path: src/Admin/Infrastructure/Controller/AdminPermissionsController.php
+
+		-
+			message: "#^Method Symfony\\\\Component\\\\HttpFoundation\\\\ParameterBag\\:\\:all\\(\\) invoked with 2 parameters, 0\\-1 required\\.$#"
+			count: 1
+			path: src/Admin/Infrastructure/Controller/AdminPermissionsController.php
+
+		-
+			message: "#^Method FluxBB\\\\Admin\\\\Infrastructure\\\\Controller\\\\AdminReportsController\\:\\:zap\\(\\) has parameter \\$params with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Admin/Infrastructure/Controller/AdminReportsController.php
+
+		-
+			message: "#^Cannot cast mixed to int\\.$#"
+			count: 10
+			path: src/Admin/Infrastructure/Controller/AdminStatisticsController.php
+
+		-
+			message: "#^Cannot cast mixed to string\\.$#"
+			count: 3
+			path: src/Admin/Infrastructure/Controller/AdminStatisticsController.php
+
+		-
+			message: "#^Only booleans are allowed in a ternary operator condition, array\\<string, mixed\\>\\|false given\\.$#"
+			count: 5
+			path: src/Admin/Infrastructure/Controller/AdminStatisticsController.php
+
+		-
+			message: "#^Method FluxBB\\\\Admin\\\\Infrastructure\\\\Controller\\\\AdminUserController\\:\\:delete\\(\\) has parameter \\$params with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Admin/Infrastructure/Controller/AdminUserController.php
+
+		-
+			message: "#^Cannot cast mixed to int\\.$#"
+			count: 9
+			path: src/Forum/Infrastructure/Persistence/DoctrineForumRepository.php
+
+		-
+			message: "#^Cannot cast mixed to string\\.$#"
+			count: 6
+			path: src/Forum/Infrastructure/Persistence/DoctrineForumRepository.php
+
+		-
+			message: "#^Cannot cast mixed to int\\.$#"
+			count: 65
+			path: src/Migrations/FluxBB15Importer.php
+
+		-
+			message: "#^Cannot cast mixed to string\\.$#"
+			count: 32
+			path: src/Migrations/FluxBB15Importer.php
+
+		-
+			message: "#^Constant FluxBB\\\\Migrations\\\\FluxBB15Importer\\:\\:CHUNK_SIZE is unused\\.$#"
+			count: 1
+			path: src/Migrations/FluxBB15Importer.php
+
+		-
+			message: "#^Cannot cast mixed to int\\.$#"
+			count: 1
+			path: src/Migrations/ImportCommand.php
+
+		-
+			message: "#^Cannot cast mixed to string\\.$#"
+			count: 7
+			path: src/Migrations/ImportCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$params of static method Doctrine\\\\DBAL\\\\DriverManager\\:\\:getConnection\\(\\) expects array\\{application_name\\?\\: string, charset\\?\\: string, dbname\\?\\: string, defaultTableOptions\\?\\: array\\<string, mixed\\>, driver\\?\\: 'ibm_db2'\\|'mysqli'\\|'oci8'\\|'pdo_mysql'\\|'pdo_oci'\\|'pdo_pgsql'\\|'pdo_sqlite'\\|'pdo_sqlsrv'\\|'pgsql'\\|'sqlite3'\\|'sqlsrv', driverClass\\?\\: class\\-string\\<Doctrine\\\\DBAL\\\\Driver\\>, driverOptions\\?\\: array, host\\?\\: string, \\.\\.\\.\\}, array\\{driver\\: string, host\\: string, port\\: int, dbname\\: string, user\\: string, password\\: string\\} given\\.$#"
+			count: 1
+			path: src/Migrations/ImportCommand.php
+
+		-
+			message: "#^Cannot cast mixed to int\\.$#"
+			count: 2
+			path: src/Moderation/Infrastructure/Persistence/DoctrineBanRepository.php
+
+		-
+			message: "#^Cannot cast mixed to string\\.$#"
+			count: 4
+			path: src/Moderation/Infrastructure/Persistence/DoctrineBanRepository.php
+
+		-
+			message: "#^Strict comparison using \\!\\=\\= between mixed and null will always evaluate to true\\.$#"
+			count: 4
+			path: src/Moderation/Infrastructure/Persistence/DoctrineBanRepository.php
+
+		-
+			message: "#^Property FluxBB\\\\Post\\\\Application\\\\Command\\\\CreatePostHandler\\:\\:\\$topicRepository is never read, only written\\.$#"
+			count: 1
+			path: src/Post/Application/Command/CreatePostCommand.php
+
+		-
+			message: "#^Argument of an invalid type array\\<int, string\\>\\|false supplied for foreach, only iterables are supported\\.$#"
+			count: 2
+			path: src/Post/Infrastructure/Parser/BBCodeParser.php
+
+		-
+			message: "#^Offset 1 on array\\{string, string\\} on left side of \\?\\? always exists and is not nullable\\.$#"
+			count: 1
+			path: src/Post/Infrastructure/Parser/BBCodeParser.php
+
+		-
+			message: "#^Only booleans are allowed in an if condition, int\\|false given\\.$#"
+			count: 1
+			path: src/Post/Infrastructure/Parser/BBCodeParser.php
+
+		-
+			message: "#^Parameter \\#1 \\$string of function strtolower expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Post/Infrastructure/Parser/BBCodeParser.php
+
+		-
+			message: "#^Property FluxBB\\\\Post\\\\Infrastructure\\\\Parser\\\\BBCodeParser\\:\\:\\$rules is never read, only written\\.$#"
+			count: 1
+			path: src/Post/Infrastructure/Parser/BBCodeParser.php
+
+		-
+			message: "#^Cannot cast mixed to int\\.$#"
+			count: 6
+			path: src/Post/Infrastructure/Persistence/DoctrinePostRepository.php
+
+		-
+			message: "#^Cannot cast mixed to string\\.$#"
+			count: 3
+			path: src/Post/Infrastructure/Persistence/DoctrinePostRepository.php
+
+		-
+			message: "#^Construct empty\\(\\) is not allowed\\. Use more strict comparison\\.$#"
+			count: 1
+			path: src/Post/Infrastructure/Persistence/DoctrinePostRepository.php
+
+		-
+			message: "#^Casting to string something that's already string\\.$#"
+			count: 1
+			path: src/Search/Infrastructure/Controller/SearchController.php
+
+		-
+			message: "#^Cannot cast mixed to float\\.$#"
+			count: 1
+			path: src/Search/Infrastructure/Persistence/PostgresSearchRepository.php
+
+		-
+			message: "#^Cannot cast mixed to int\\.$#"
+			count: 3
+			path: src/Search/Infrastructure/Persistence/PostgresSearchRepository.php
+
+		-
+			message: "#^Cannot cast mixed to string\\.$#"
+			count: 3
+			path: src/Search/Infrastructure/Persistence/PostgresSearchRepository.php
+
+		-
+			message: "#^Only booleans are allowed in an if condition, int\\<0, max\\>\\|false given\\.$#"
+			count: 1
+			path: src/Search/Infrastructure/Persistence/PostgresSearchRepository.php
+
+		-
+			message: "#^Cannot call method getRealPath\\(\\) on mixed\\.$#"
+			count: 2
+			path: src/Shared/Infrastructure/Cache/FileCache.php
+
+		-
+			message: "#^Cannot call method isDir\\(\\) on mixed\\.$#"
+			count: 1
+			path: src/Shared/Infrastructure/Cache/FileCache.php
+
+		-
+			message: "#^Cannot call method isFile\\(\\) on mixed\\.$#"
+			count: 1
+			path: src/Shared/Infrastructure/Cache/FileCache.php
+
+		-
+			message: "#^Cannot use array destructuring on mixed\\.$#"
+			count: 1
+			path: src/Shared/Infrastructure/Cache/FileCache.php
+
+		-
+			message: "#^Method FluxBB\\\\Shared\\\\Infrastructure\\\\Cache\\\\FileCache\\:\\:setMultiple\\(\\) has parameter \\$values with no value type specified in iterable type iterable\\.$#"
+			count: 1
+			path: src/Shared/Infrastructure/Cache/FileCache.php
+
+		-
+			message: "#^Property FluxBB\\\\Shared\\\\Infrastructure\\\\Cache\\\\FileCache\\:\\:\\$runtimeCache \\(array\\<string, array\\{mixed, int\\}\\>\\) does not accept non\\-empty\\-array\\<string, array\\{mixed, mixed\\}\\>\\.$#"
+			count: 1
+			path: src/Shared/Infrastructure/Cache/FileCache.php
+
+		-
+			message: "#^Parameter \\#1 \\$params of static method Doctrine\\\\DBAL\\\\DriverManager\\:\\:getConnection\\(\\) expects array\\{application_name\\?\\: string, charset\\?\\: string, dbname\\?\\: string, defaultTableOptions\\?\\: array\\<string, mixed\\>, driver\\?\\: 'ibm_db2'\\|'mysqli'\\|'oci8'\\|'pdo_mysql'\\|'pdo_oci'\\|'pdo_pgsql'\\|'pdo_sqlite'\\|'pdo_sqlsrv'\\|'pgsql'\\|'sqlite3'\\|'sqlsrv', driverClass\\?\\: class\\-string\\<Doctrine\\\\DBAL\\\\Driver\\>, driverOptions\\?\\: array, host\\?\\: string, \\.\\.\\.\\}, array\\{driver\\: string, host\\: string, port\\: int, dbname\\: string, user\\: string, password\\: string, charset\\: string, driverOptions\\: array\\{3\\: 2, 19\\: 2, 20\\: false\\}, \\.\\.\\.\\} given\\.$#"
+			count: 1
+			path: src/Shared/Infrastructure/Database/DoctrineConnectionFactory.php
+
+		-
+			message: "#^Cannot cast mixed to string\\.$#"
+			count: 1
+			path: src/Shared/Infrastructure/Database/QueryMonitor.php
+
+		-
+			message: "#^Cannot call method handle\\(\\) on mixed\\.$#"
+			count: 2
+			path: src/Shared/Infrastructure/Kernel.php
+
+		-
+			message: "#^Parameter \\$connection of static method FluxBB\\\\Shared\\\\Infrastructure\\\\Security\\\\SessionFactory\\:\\:create\\(\\) expects Doctrine\\\\DBAL\\\\Connection\\|null, mixed given\\.$#"
+			count: 1
+			path: src/Shared/Infrastructure/Kernel.php
+
+		-
+			message: "#^Parameter \\$cookieName of static method FluxBB\\\\Shared\\\\Infrastructure\\\\Security\\\\SessionFactory\\:\\:create\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: src/Shared/Infrastructure/Kernel.php
+
+		-
+			message: "#^Call to method from\\(\\) on an unknown class Symfony\\\\Component\\\\Mime\\\\Email\\.$#"
+			count: 1
+			path: src/Shared/Infrastructure/Mail/FluxBBMailer.php
+
+		-
+			message: "#^Call to static method fromDsn\\(\\) on an unknown class Symfony\\\\Component\\\\Mailer\\\\Transport\\.$#"
+			count: 1
+			path: src/Shared/Infrastructure/Mail/FluxBBMailer.php
+
+		-
+			message: "#^Constant FluxBB\\\\Shared\\\\Infrastructure\\\\Mail\\\\FluxBBMailer\\:\\:DSN_PATTERN is unused\\.$#"
+			count: 1
+			path: src/Shared/Infrastructure/Mail/FluxBBMailer.php
+
+		-
+			message: "#^Instantiated class Symfony\\\\Component\\\\Mime\\\\Address not found\\.$#"
+			count: 1
+			path: src/Shared/Infrastructure/Mail/FluxBBMailer.php
+
+		-
+			message: "#^Instantiated class Symfony\\\\Component\\\\Mime\\\\Email not found\\.$#"
+			count: 1
+			path: src/Shared/Infrastructure/Mail/FluxBBMailer.php
+
+		-
+			message: "#^Cannot cast mixed to string\\.$#"
+			count: 3
+			path: src/Shared/Infrastructure/Persistence/DoctrineConfigRepository.php
+
+		-
+			message: "#^Constant FluxBB\\\\Shared\\\\Infrastructure\\\\Security\\\\CookieAuthProvider\\:\\:COOKIE_SEED is unused\\.$#"
+			count: 1
+			path: src/Shared/Infrastructure/Security/CookieAuthProvider.php
+
+		-
+			message: "#^Property FluxBB\\\\Shared\\\\Infrastructure\\\\Security\\\\CookieAuthProvider\\:\\:\\$cookieName is never read, only written\\.$#"
+			count: 1
+			path: src/Shared/Infrastructure/Security/CookieAuthProvider.php
+
+		-
+			message: "#^Cannot cast mixed to string\\.$#"
+			count: 1
+			path: src/Shared/Infrastructure/Security/CsrfMiddleware.php
+
+		-
+			message: "#^Method FluxBB\\\\Shared\\\\Infrastructure\\\\Security\\\\CsrfMiddleware\\:\\:generateToken\\(\\) should return string but returns mixed\\.$#"
+			count: 1
+			path: src/Shared/Infrastructure/Security/CsrfMiddleware.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between non\\-empty\\-string and false will always evaluate to false\\.$#"
+			count: 2
+			path: src/Shared/Infrastructure/Security/PasswordHasher.php
+
+		-
+			message: "#^Property FluxBB\\\\Subscription\\\\Infrastructure\\\\Mail\\\\SubscriptionMailer\\:\\:\\$fromEmail is never read, only written\\.$#"
+			count: 1
+			path: src/Subscription/Infrastructure/Mail/SubscriptionMailer.php
+
+		-
+			message: "#^Cannot cast mixed to int\\.$#"
+			count: 3
+			path: src/Subscription/Infrastructure/Persistence/DoctrineSubscriptionRepository.php
+
+		-
+			message: "#^Cannot cast mixed to int\\.$#"
+			count: 7
+			path: src/Topic/Infrastructure/Persistence/DoctrineTopicRepository.php
+
+		-
+			message: "#^Cannot cast mixed to string\\.$#"
+			count: 3
+			path: src/Topic/Infrastructure/Persistence/DoctrineTopicRepository.php
+
+		-
+			message: "#^Construct empty\\(\\) is not allowed\\. Use more strict comparison\\.$#"
+			count: 2
+			path: src/Topic/Infrastructure/Persistence/DoctrineTopicRepository.php
+
+		-
+			message: "#^Method FluxBB\\\\User\\\\Infrastructure\\\\Controller\\\\AuthController\\:\\:resetPassword\\(\\) has parameter \\$params with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/User/Infrastructure/Controller/AuthController.php
+
+		-
+			message: "#^Method FluxBB\\\\User\\\\Infrastructure\\\\Controller\\\\AuthController\\:\\:resetPasswordForm\\(\\) has parameter \\$params with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/User/Infrastructure/Controller/AuthController.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of class FluxBB\\\\User\\\\Domain\\\\Email constructor expects string, mixed given\\.$#"
+			count: 1
+			path: src/User/Infrastructure/Controller/AuthController.php
+
+		-
+			message: "#^Cannot cast mixed to int\\.$#"
+			count: 3
+			path: src/User/Infrastructure/Persistence/DoctrineUserRepository.php
+
+		-
+			message: "#^Cannot cast mixed to string\\.$#"
+			count: 5
+			path: src/User/Infrastructure/Persistence/DoctrineUserRepository.php
+
+		-
+			message: "#^Property FluxBB\\\\User\\\\Infrastructure\\\\Persistence\\\\DoctrineUserRepository\\:\\:\\$passwordHasher is never read, only written\\.$#"
+			count: 1
+			path: src/User/Infrastructure/Persistence/DoctrineUserRepository.php

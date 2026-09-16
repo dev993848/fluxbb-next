@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin: Permissions{% endblock %}
+
+{% block breadcrumbs_extra %}
+    <svg class="separator" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+    </svg>
+    <a href="/admin">Admin</a>
+    <svg class="separator" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+    </svg>
+    <span class="current">Permissions</span>
+{% endblock %}
+
+{% block body %}
+<div class="admin-layout">
+    <aside class="admin-sidebar">
+        {% include 'admin/_sidebar.html.twig' %}
+    </aside>
+
+    <div class="admin-content">
+        <div class="page-header animate-fade-in">
+            <h1>Forum Permissions</h1>
+            <p>Grant or restrict access to forums per user group.</p>
+        </div>
+
+        <div class="card animate-fade-in-up">
+            <div class="card-body">
+                <form method="post" action="/admin/permissions">
+                    <input type="hidden" name="_csrf_token" value="{{ _csrf_token }}">
+
+                    <div class="form-group">
+                        <label class="form-label" for="group_id">User Group</label>
+                        <select id="group_id" name="group_id" class="form-select"
+                                style="max-width: 300px;" onchange="this.form.submit()">
+                            {% for group in groups %}
+                                <option value="{{ group.g_id }}" {{ group.g_id == selected_gid ? 'selected' : '' }}>
+                                    {{ group.g_title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Forum</th>
+                                    <th class="text-center">Read</th>
+                                    <th class="text-center">Post Replies</th>
+                                    <th class="text-center">Post Topics</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for forum in forums %}
+                                    {% set p = matrix[selected_gid][forum.id]|default({}) %}
+                                    <tr>
+                                        <td><strong>{{ forum.forum_name }}</strong></td>
+                                        <td class="text-center">
+                                            <label class="form-checkbox" style="justify-content: center;">
+                                                <input type="checkbox" name="perms[{{ forum.id }}][read_forum]" value="1"
+                                                       {{ p.read_forum ? 'checked' : '' }}>
+                                            </label>
+                                        </td>
+                                        <td class="text-center">
+                                            <label class="form-checkbox" style="justify-content: center;">
+                                                <input type="checkbox" name="perms[{{ forum.id }}][post_replies]" value="1"
+                                                       {{ p.post_replies ? 'checked' : '' }}>
+                                            </label>
+                                        </td>
+                                        <td class="text-center">
+                                            <label class="form-checkbox" style="justify-content: center;">
+                                                <input type="checkbox" name="perms[{{ forum.id }}][post_topics]" value="1"
+                                                       {{ p.post_topics ? 'checked' : '' }}>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr><td colspan="4" class="text-center text-muted">No forums found.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-6">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                                <polyline points="17 21 17 13 7 13 7 21"/>
+                                <polyline points="7 3 7 8 15 8"/>
+                            </svg>
+                            Save Permissions
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

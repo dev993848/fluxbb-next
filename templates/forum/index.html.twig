@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Index{% endblock %}
+
+{% block body %}
+    <div class="page-header animate-fade-in">
+        <h1>FluxBB Forum</h1>
+        <p>Welcome to the forum. Browse categories and discussions below.</p>
+    </div>
+
+    {% if categories is defined and categories is not empty %}
+        {% for categoryData in categories %}
+            {% set cat = categoryData.category %}
+            {% set forums = categoryData.forums %}
+            <div class="forum-category animate-fade-in-up">
+                <h2 class="forum-category-title">{{ cat.name }}</h2>
+
+                <div class="card">
+                    {% if forums is defined and forums is not empty %}
+                        {% for forum in forums %}
+                            <div class="forum-row animate-stagger">
+                                <div class="forum-row-icon">
+                                    {% if forum.numPosts > 0 %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                    </svg>
+                                    {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.4">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                    </svg>
+                                    {% endif %}
+                                </div>
+
+                                <div class="forum-row-info">
+                                    <h3><a href="/forum/{{ forum.id }}">{{ forum.name }}</a></h3>
+                                    <p>{{ forum.description ?: 'No description' }}</p>
+                                </div>
+
+                                <div class="forum-row-stats">
+                                    <div class="forum-row-stat">
+                                        <span class="stat-value">{{ forum.numTopics }}</span>
+                                        <span class="stat-label">Topics</span>
+                                    </div>
+                                    <div class="forum-row-stat">
+                                        <span class="stat-value">{{ forum.numPosts }}</span>
+                                        <span class="stat-label">Posts</span>
+                                    </div>
+                                </div>
+
+                                <div class="forum-row-lastpost">
+                                    {% if forum.lastPosterName and forum.lastPosted %}
+                                        <p><small>Last post by {{ forum.lastPosterName }}</small></p>
+                                        <p><small class="text-muted">{{ forum.lastPosted|date('Y-m-d H:i') }}</small></p>
+                                    {% else %}
+                                        <p><small class="text-muted">No posts yet</small></p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                            <h3>No forums yet</h3>
+                            <p>This category has no forums. Check back later.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="card animate-fade-in-up">
+            <div class="empty-state">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+                <h3>Welcome to FluxBB</h3>
+                <p>The forum is ready. Start by creating forums in the admin panel.</p>
+                <a href="/admin" class="btn btn-primary">Go to Admin</a>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

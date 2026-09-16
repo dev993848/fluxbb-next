@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin: Reports{% endblock %}
+
+{% block breadcrumbs_extra %}
+    <svg class="separator" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+    </svg>
+    <a href="/admin">Admin</a>
+    <svg class="separator" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+    </svg>
+    <span class="current">Reports</span>
+{% endblock %}
+
+{% block body %}
+<div class="admin-layout">
+    <aside class="admin-sidebar">
+        {% include 'admin/_sidebar.html.twig' %}
+    </aside>
+
+    <div class="admin-content">
+        <div class="page-header animate-fade-in">
+            <h1>Open Reports</h1>
+            <p>Review reported posts from the community.</p>
+        </div>
+
+        <div class="card animate-fade-in-up">
+            <div class="table-wrapper" style="border: none;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Post</th>
+                            <th>Reporter</th>
+                            <th>Date</th>
+                            <th>Message</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in reports %}
+                            <tr>
+                                <td><span class="badge badge-info">#{{ report.post_id }}</span></td>
+                                <td>{{ report.reporter_name }}</td>
+                                <td class="text-muted">{{ report.created|date('Y-m-d H:i') }}</td>
+                                <td class="text-muted" style="max-width: 300px;">
+                                    <span class="truncate" style="display: block;">{{ report.message|slice(0, 100) }}</span>
+                                </td>
+                                <td class="table-actions">
+                                    <form method="post" action="/admin/reports/zap/{{ report.id }}" style="display:inline">
+                                        <input type="hidden" name="_csrf_token" value="{{ _csrf_token }}">
+                                        <button type="submit" class="btn btn-sm btn-secondary"
+                                                onclick="return confirm('Mark this report as resolved?')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="20 6 9 17 4 12"/>
+                                            </svg>
+                                            Zap
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr><td colspan="5" class="text-center text-muted">No open reports. All clear!</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

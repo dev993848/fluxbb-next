@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin: Bans{% endblock %}
+
+{% block breadcrumbs_extra %}
+    <svg class="separator" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+    </svg>
+    <a href="/admin">Admin</a>
+    <svg class="separator" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+    </svg>
+    <span class="current">Bans</span>
+{% endblock %}
+
+{% block body %}
+<div class="admin-layout">
+    <aside class="admin-sidebar">
+        {% include 'admin/_sidebar.html.twig' %}
+    </aside>
+
+    <div class="admin-content">
+        <div class="page-header animate-fade-in">
+            <h1>Manage Bans</h1>
+            <p>IP, email, and username bans.</p>
+        </div>
+
+        {% if error is defined %}
+            <div class="alert alert-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+                </svg>
+                <span>{{ error }}</span>
+            </div>
+        {% endif %}
+
+        <div class="card animate-fade-in-up mb-8">
+            <div class="card-header">
+                <h3>Add New Ban</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" action="/admin/bans">
+                    <input type="hidden" name="_csrf_token" value="{{ _csrf_token }}">
+
+                    <div class="stats-grid" style="margin-bottom: var(--space-5);">
+                        <div class="form-group">
+                            <label class="form-label" for="ip">IP Address</label>
+                            <input type="text" id="ip" name="ip" class="form-input" placeholder="192.168.*.*">
+                            <p class="form-hint">Use * for wildcard, e.g. 192.168.*.*</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email</label>
+                            <input type="email" id="email" name="email" class="form-input" placeholder="user@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="username">Username</label>
+                            <input type="text" id="username" name="username" class="form-input" placeholder="Username">
+                        </div>
+                    </div>
+
+                    <div class="stats-grid" style="margin-bottom: var(--space-5);">
+                        <div class="form-group">
+                            <label class="form-label" for="message">Ban Message</label>
+                            <input type="text" id="message" name="message" class="form-input" placeholder="You are banned">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="expire_days">Expire (days)</label>
+                            <input type="number" id="expire_days" name="expire_days" class="form-input" value="0" min="0">
+                            <p class="form-hint">0 = permanent</p>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+                        </svg>
+                        Add Ban
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card animate-fade-in-up">
+            <div class="card-header">
+                <h3>Active Bans ({{ bans|length }})</h3>
+            </div>
+            <div class="table-wrapper" style="border: none;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>IP</th>
+                            <th>Email</th>
+                            <th>Username</th>
+                            <th>Expires</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ban in bans %}
+                            <tr>
+                                <td><code>{{ ban.ipMask ? ban.ipMask.toString : '-' }}</code></td>
+                                <td class="text-muted">{{ ban.email ? ban.email : '-' }}</td>
+                                <td>{{ ban.username ? ban.username : '-' }}</td>
+                                <td>
+                                    {% if ban.expiresAt %}
+                                        <span class="badge badge-warning">{{ ban.expiresAt|date('Y-m-d') }}</span>
+                                    {% else %}
+                                        <span class="badge badge-danger">Permanent</span>
+                                    {% endif %}
+                                </td>
+                                <td class="table-actions">
+                                    <a href="/admin/bans/delete/{{ ban.id }}" class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Remove this ban?')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                        </svg>
+                                        Remove
+                                    </a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr><td colspan="5" class="text-center text-muted">No bans found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+parameters:
+    level: max
+    paths:
+        - src/
+    bootstrapFiles:
+        - src/Shared/Infrastructure/constants.php
+    excludePaths:
+        - src/*/Infrastructure/Migrations/*
+    reportUnmatchedIgnoredErrors: false
+
+includes:
+    - phpstan-baseline.neon

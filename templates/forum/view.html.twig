@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ forum.name }}{% endblock %}
+
+{% block breadcrumbs_extra %}
+    <svg class="separator" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+    </svg>
+    <span class="current">{{ forum.name }}</span>
+{% endblock %}
+
+{% block body %}
+    <div class="page-header animate-fade-in">
+        <div class="flex items-center justify-between gap-4">
+            <div>
+                <h1>{{ forum.name }}</h1>
+                {% if forum.redirectUrl %}
+                    <p>This forum redirects to: <a href="{{ forum.redirectUrl }}">{{ forum.redirectUrl }}</a></p>
+                {% endif %}
+            </div>
+            <a href="/post/new?fid={{ forum.id }}" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                New Topic
+            </a>
+        </div>
+    </div>
+
+    {% if forum.redirectUrl %}
+        <div class="alert alert-info">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            <span>This forum redirects to <a href="{{ forum.redirectUrl }}">{{ forum.redirectUrl }}</a></span>
+        </div>
+    {% else %}
+        {% if topics is defined and topics is not empty %}
+            <div class="card animate-fade-in-up">
+                <div class="table-wrapper" style="border: none;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Topic</th>
+                                <th class="text-center">Replies</th>
+                                <th class="text-center">Views</th>
+                                <th>Last Post</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for topic in topics %}
+                            <tr class="animate-fade-in-up">
+                                <td>
+                                    <div class="flex items-center gap-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" style="color: var(--clr-primary);">
+                                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                        </svg>
+                                        <div>
+                                            <h4 style="margin: 0;">
+                                                <a href="/topic/{{ topic.id }}">
+                                                    {% if topic.sticky %}<span class="badge badge-info">Sticky</span> {% endif %}
+                                                    {% if topic.closed %}<span class="badge badge-warning">Closed</span> {% endif %}
+                                                    {{ topic.subject }}
+                                                </a>
+                                            </h4>
+                                            <small class="text-muted">by <strong>{{ topic.poster }}</strong></small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center">{{ topic.numReplies }}</td>
+                                <td class="text-center">—</td>
+                                <td>
+                                    <small>{{ topic.lastPoster }}<br>
+                                    <span class="text-muted">{{ topic.lastPostedAt|date('Y-m-d H:i') }}</span></small>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% else %}
+            <div class="card animate-fade-in-up">
+                <div class="empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <h3>No topics yet</h3>
+                    <p>Be the first to start a discussion in this forum.</p>
+                    <a href="/post/new?fid={{ forum.id }}" class="btn btn-primary">Create First Topic</a>
+                </div>
+            </div>
+        {% endif %}
+
+        {# Pagination #}
+        {% if total_pages is defined and total_pages > 1 %}
+            <div class="pagination">
+                {% if current_page > 1 %}
+                    <a href="?page={{ current_page - 1 }}">&laquo; Previous</a>
+                {% endif %}
+                {% for i in 1..total_pages %}
+                    <a href="?page={{ i }}" class="{{ i == current_page ? 'current' : '' }}">{{ i }}</a>
+                {% endfor %}
+                {% if current_page < total_pages %}
+                    <a href="?page={{ current_page + 1 }}">Next &raquo;</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}

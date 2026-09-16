@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Search{% endblock %}
+
+{% block body %}
+    <div class="page-header animate-fade-in">
+        <h1>Search Posts</h1>
+        <p>Find discussions by keyword.</p>
+    </div>
+
+    <div class="search-form animate-fade-in-up">
+        <form method="get" action="/search">
+            <div class="form-inline">
+                <div style="flex: 1;">
+                    <label class="sr-only" for="keywords">Keywords</label>
+                    <input type="search" id="keywords" name="keywords"
+                           class="form-input" value="{{ keywords|default('') }}"
+                           maxlength="100" required placeholder="Search topics and posts...">
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    Search
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {% if error is defined %}
+        <div class="alert alert-warning">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            <span>{{ error }}</span>
+        </div>
+    {% endif %}
+
+    {% if results is defined and results is not empty %}
+        <div class="card animate-fade-in-up">
+            <div class="card-header">
+                <h3>Search Results ({{ results|length }})</h3>
+            </div>
+            {% for result in results %}
+                <div class="search-result">
+                    <h4><a href="/topic/{{ result.topicId }}">{{ result.subject|raw }}</a></h4>
+                    <div class="search-result-meta">
+                        <span>by <strong>{{ result.poster }}</strong></span>
+                        <span>{{ result.postedAt|date('Y-m-d H:i') }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% elseif keywords is defined and keywords is not empty %}
+        <div class="card">
+            <div class="empty-state">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <h3>No results found</h3>
+                <p>No posts match "{{ keywords }}". Try different keywords.</p>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

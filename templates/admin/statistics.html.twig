@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin: Statistics{% endblock %}
+
+{% block breadcrumbs_extra %}
+    <svg class="separator" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+    </svg>
+    <a href="/admin">Admin</a>
+    <svg class="separator" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+    </svg>
+    <span class="current">Statistics</span>
+{% endblock %}
+
+{% block body %}
+<div class="admin-layout">
+    <aside class="admin-sidebar">
+        {% include 'admin/_sidebar.html.twig' %}
+    </aside>
+
+    <div class="admin-content">
+        <div class="page-header animate-fade-in">
+            <h1>Forum Statistics</h1>
+            <p>Usage metrics and database statistics.</p>
+        </div>
+
+        <div class="stats-grid animate-stagger mb-8">
+            <div class="stat-card">
+                <div class="stat-card-value">{{ stats.num_users|default(0) }}</div>
+                <div class="stat-card-label">Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-value">{{ stats.num_topics|default(0) }}</div>
+                <div class="stat-card-label">Topics</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-value">{{ stats.num_posts|default(0) }}</div>
+                <div class="stat-card-label">Posts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-value">{{ stats.num_forums|default(0) }}</div>
+                <div class="stat-card-label">Forums</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-value">{{ stats.num_categories|default(0) }}</div>
+                <div class="stat-card-label">Categories</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-value">{{ stats.num_bans|default(0) }}</div>
+                <div class="stat-card-label">Active Bans</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-value">{{ stats.num_reports_open|default(0) }}</div>
+                <div class="stat-card-label">Open Reports</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-value">{{ stats.num_subscriptions|default(0) }}</div>
+                <div class="stat-card-label">Subscriptions</div>
+            </div>
+        </div>
+
+        <div class="card animate-fade-in-up">
+            <div class="card-header">
+                <h3>Detailed Statistics</h3>
+            </div>
+            <div class="card-body">
+                <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
+                    <div>
+                        <p><strong>Largest Forum:</strong> {{ stats.largest_forum|default('—') }}</p>
+                        <p class="text-muted">{{ stats.largest_forum_posts|default(0) }} posts</p>
+                    </div>
+                    <div>
+                        <p><strong>Latest User:</strong> {{ stats.latest_user|default('—') }}</p>
+                        <p class="text-muted">{{ stats.latest_user_date|default('—') }}</p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <p><strong>Database Size:</strong> <span class="text-muted">{{ stats.db_size|default('—') }}</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

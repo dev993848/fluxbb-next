@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <div class="page-header animate-fade-in">
+        <h1>Create Account</h1>
+        <p>Join the FluxBB community. Registration is quick and easy.</p>
+    </div>
+
+    <div class="card animate-fade-in-up" style="max-width: 480px; margin: 0 auto;">
+        <div class="card-body">
+            {% if errors is defined and errors is not empty %}
+                <div class="alert alert-danger">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+                    </svg>
+                    <div>
+                        {% for error in errors %}
+                            <p style="margin: 0;">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <form method="post" action="/register">
+                <div class="form-group">
+                    <label class="form-label" for="req_username">
+                        Username <span class="required">*</span>
+                    </label>
+                    <input type="text" id="req_username" name="req_username" class="form-input"
+                           value="{{ username|default('') }}" maxlength="25" required
+                           placeholder="Choose a username">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="req_email">
+                        Email <span class="required">*</span>
+                    </label>
+                    <input type="email" id="req_email" name="req_email" class="form-input"
+                           value="{{ email|default('') }}" required
+                           placeholder="your@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="req_password">
+                        Password <span class="required">*</span>
+                    </label>
+                    <input type="password" id="req_password" name="req_password" class="form-input" required
+                           placeholder="At least 8 characters" minlength="8">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="req_password_confirm">
+                        Confirm Password <span class="required">*</span>
+                    </label>
+                    <input type="password" id="req_password_confirm" name="req_password_confirm"
+                           class="form-input" required placeholder="Repeat your password" minlength="8">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg btn-block">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <line x1="19" y1="8" x2="19" y2="14"/>
+                        <line x1="22" y1="11" x2="16" y2="11"/>
+                    </svg>
+                    Create Account
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <a href="/login" class="text-muted">Already have an account? Sign in</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
