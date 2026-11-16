@@ -62,7 +62,15 @@ class ImportCommand extends Command
             /** @psalm-suppress InvalidArgument — Doctrine DBAL 4 accepts 'url' key, but Psalm type is strict */
             $oldConnection = \Doctrine\DBAL\DriverManager::getConnection(['url' => $oldDbUrl]);
         } else {
-            $oldDriver = (string) $input->getOption('old-driver');
+            $oldDriverRaw = (string) $input->getOption('old-driver');
+            /** @var 'pdo_pgsql'|'pdo_mysql'|'pdo_sqlite'|'pdo_oci'|'pdo_sqlsrv' $oldDriver */
+            $oldDriver = match ($oldDriverRaw) {
+                'pdo_mysql', 'mysqli' => 'pdo_mysql',
+                'pdo_sqlite', 'sqlite3' => 'pdo_sqlite',
+                'pdo_oci', 'oci8' => 'pdo_oci',
+                'pdo_sqlsrv', 'sqlsrv' => 'pdo_sqlsrv',
+                default => 'pdo_pgsql',
+            };
             $oldHost = (string) $input->getOption('old-host');
             $oldPort = (int) $input->getOption('old-port');
             $oldDbname = (string) $input->getOption('old-dbname');

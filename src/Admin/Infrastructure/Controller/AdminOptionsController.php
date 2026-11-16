@@ -46,13 +46,14 @@ class AdminOptionsController
      */
     public function save(Request $request): Response
     {
-        $configValues = $request->request->all('config', []);
+        /** @var array<string|int, mixed> $configValues */
+        $configValues = $request->request->all('config');
 
         foreach ($configValues as $name => $value) {
             $this->db->executeStatement(
                 'INSERT INTO forum_config (conf_name, conf_value) VALUES (?, ?)
                  ON CONFLICT (conf_name) DO UPDATE SET conf_value = EXCLUDED.conf_value',
-                [$name, (string) $value]
+                [(string) $name, (string) $value]
             );
         }
 

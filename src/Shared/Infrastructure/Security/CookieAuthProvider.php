@@ -5,23 +5,20 @@ declare(strict_types=1);
 namespace FluxBB\Shared\Infrastructure\Security;
 
 use FluxBB\User\Domain\User;
-use FluxBB\User\Domain\UserId;
 
 /**
- * Cookie-based authentication provider.
+ * Cookie-based authentication provider ("remember me").
  *
- * Replicates FluxBB 1.5's check_cookie() logic using modern
- * Symfony HttpFoundation components with HMAC-based verification.
- *
- * The cookie stores: {userId}:{passwordHash}
- * with server-side verification against the stored hash.
+ * Cookie format: {userId}|{expires}|{hmac}
+ * HMAC covers userId, expiry, and a fingerprint of the password hash so that
+ * changing the password invalidates existing remember-me cookies.
  */
 class CookieAuthProvider
 {
-    private const string COOKIE_SEED = 'fluxbb_auth_seed';
+    private const string REMEMBER_COOKIE = 'fluxbb_remember';
 
     /**
-     * @param string $cookieName The cookie name (from config)
+     * @param string $cookieName Session cookie name (config; remember uses fixed name)
      * @param string $seed The HMAC seed
      */
     public function __construct(
@@ -29,28 +26,31 @@ class CookieAuthProvider
         private readonly string $seed,
     ) {}
 
+    public function getRememberCookieName(): string
+    {
+        return self::REMEMBER_COOKIE;
+    }
+
     /**
      * Generate a login cookie value.
      *
-     * @param User $user The authenticated user
-     * @return string Cookie value: {id}:{hmac}
+     * @return string Cookie value: {id}|{expires}|{hmac}
      */
     public function generateCookie(User $user): string
     {
         $expires = time() + 1209600; // 14 days
         $userId = $user->getId()->toInt();
-        $hmac = $this->computeHmac((string) $userId, $expires);
+        $hmac = $this->computeHmac((string) $userId, $expires, $user->getPasswordHash());
 
         return sprintf('%d|%d|%s', $userId, $expires, $hmac);
     }
 
     /**
-     * Validate a cookie and return the user ID.
+     * Parse cookie and return user id if the signature matches the given password hash.
      *
-     * @param string $cookieValue Raw cookie value
      * @return int|null User ID if valid, null otherwise
      */
-    public function validateCookie(string $cookieValue): ?int
+    public function validateCookie(string $cookieValue, string $passwordHash): ?int
     {
         $parts = explode('|', $cookieValue);
         if (count($parts) !== 3) {
@@ -61,11 +61,11 @@ class CookieAuthProvider
         $expires = (int) $parts[1];
         $hmac = $parts[2];
 
-        if ($expires < time()) {
+        if ($userId < 1 || $expires < time()) {
             return null;
         }
 
-        $expected = $this->computeHmac((string) $userId, $expires);
+        $expected = $this->computeHmac((string) $userId, $expires, $passwordHash);
         if (!hash_equals($expected, $hmac)) {
             return null;
         }
@@ -74,10 +74,24 @@ class CookieAuthProvider
     }
 
     /**
-     * Compute HMAC for cookie signing.
+     * Extract user id from cookie without verifying password (for DB lookup).
      */
-    private function computeHmac(string $userId, int $expires): string
+    public function peekUserId(string $cookieValue): ?int
     {
-        return hash_hmac('sha256', $userId . '|' . $expires, $this->seed);
+        $parts = explode('|', $cookieValue);
+        if (count($parts) !== 3) {
+            return null;
+        }
+
+        $userId = (int) $parts[0];
+
+        return $userId > 0 ? $userId : null;
+    }
+
+    private function computeHmac(string $userId, int $expires, string $passwordHash): string
+    {
+        $fingerprint = hash('sha256', $passwordHash);
+
+        return hash_hmac('sha256', $userId . '|' . $expires . '|' . $fingerprint, $this->seed);
     }
 }

@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-alpha.1] — 2026-11-16
+
+### Security
+- Admin routes require authenticated admin/moderator (`AdminAuthMiddleware`)
+- Destructive admin actions and subscriptions are POST-only with CSRF
+- Subscription user id taken from session (IDOR fix); email unsubscribe link requires matching session
+- Removed CSRF bypass via bare `Authorization` header
+- Remember-me cookie restored in Kernel; HMAC bound to password hash fingerprint; `Secure` flag follows HTTPS
+
+### Fixed
+- `.env.example` quoting for `MAILER_FROM_NAME`; added `APP_URL`
+- Readme/docs port aligned with compose (`8081`)
+- `psalm/phar` moved to require-dev; composer script calls `psalm.phar`
+- Removed unused `php-di/slim-bridge`
+- `SubscriptionMailer` delegates to `FluxBBMailer` (no more `error_log` stub)
+
 ## [1.0.0-alpha] — 2025-01-01
 
 ### Added

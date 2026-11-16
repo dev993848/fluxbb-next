@@ -41,13 +41,13 @@ class CookieAuthProviderTest extends TestCase
         $this->assertNotEmpty($cookie);
         $this->assertStringContainsString('1|', $cookie);
 
-        $userId = $this->provider->validateCookie($cookie);
+        $userId = $this->provider->validateCookie($cookie, $user->getPasswordHash());
         $this->assertSame(1, $userId);
     }
 
     public function testInvalidCookieFormatReturnsNull(): void
     {
-        $userId = $this->provider->validateCookie('invalid');
+        $userId = $this->provider->validateCookie('invalid', 'hash');
         $this->assertNull($userId);
     }
 
@@ -64,7 +64,22 @@ class CookieAuthProviderTest extends TestCase
         $cookie = $this->provider->generateCookie($user);
         $tampered = substr_replace($cookie, '3', 0, 1); // Change user ID
 
-        $userId = $this->provider->validateCookie($tampered);
+        $userId = $this->provider->validateCookie($tampered, $user->getPasswordHash());
         $this->assertNull($userId);
+    }
+
+    public function testPasswordChangeInvalidatesCookie(): void
+    {
+        $user = new User(
+            id: new UserId(5),
+            username: new Username('bob'),
+            email: new Email('bob@example.com'),
+            groupId: GroupId::Member,
+            passwordHash: 'old-hash',
+        );
+
+        $cookie = $this->provider->generateCookie($user);
+        $this->assertNull($this->provider->validateCookie($cookie, 'new-hash'));
+        $this->assertSame(5, $this->provider->validateCookie($cookie, 'old-hash'));
     }
 }

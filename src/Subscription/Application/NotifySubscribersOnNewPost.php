@@ -25,6 +25,7 @@ class NotifySubscribersOnNewPost
         private readonly UserRepository $users,
         private readonly TopicRepository $topics,
         private readonly FluxBBMailer $mailer,
+        private readonly string $appUrl = '',
     ) {}
 
     /**
@@ -40,6 +41,7 @@ class NotifySubscribersOnNewPost
             return;
         }
 
+        $baseUrl = rtrim($this->appUrl !== '' ? $this->appUrl : (string) ($_ENV['APP_URL'] ?? 'http://localhost'), '/');
         $subscribers = $this->subscriptions->findByTopic($event->topicId);
 
         foreach ($subscribers as $subscription) {
@@ -54,28 +56,27 @@ class NotifySubscribersOnNewPost
             }
 
             $subject = sprintf('New reply: %s', $topic->getSubject());
+            $topicUrl = sprintf('%s/topic/%d', $baseUrl, $event->topicId);
+            $unsubUrl = sprintf('%s/topic/%d/unsubscribe/%d', $baseUrl, $event->topicId, $user->getId()->toInt());
+
             $body = sprintf(
                 "<h2>New reply in \"%s\"</h2>"
                 . "<p>A new reply has been posted in a topic you're subscribed to.</p>"
-                . "<p><a href=\"%s/topic/%d\">View the topic</a></p>"
+                . "<p><a href=\"%s\">View the topic</a></p>"
                 . "<hr><p style=\"color:#888;\">You are receiving this because you subscribed to this topic."
-                . " <a href=\"%s/topic/%d/unsubscribe/%d\">Unsubscribe</a></p>",
+                . " <a href=\"%s\">Unsubscribe</a></p>",
                 htmlspecialchars($topic->getSubject()),
-                'https://your-forum.com',
-                $event->topicId,
-                'https://your-forum.com',
-                $event->topicId,
-                $user->getId()->toInt()
+                htmlspecialchars($topicUrl),
+                htmlspecialchars($unsubUrl)
             );
             $altBody = sprintf(
                 "New reply in \"%s\"\n\n"
                 . "A new reply has been posted in a topic you're subscribed to.\n\n"
-                . "View: https://your-forum.com/topic/%d\n\n"
-                . "Unsubscribe: https://your-forum.com/topic/%d/unsubscribe/%d",
+                . "View: %s\n\n"
+                . "Unsubscribe: %s",
                 $topic->getSubject(),
-                $event->topicId,
-                $event->topicId,
-                $user->getId()->toInt()
+                $topicUrl,
+                $unsubUrl
             );
 
             $this->mailer->send(

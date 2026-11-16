@@ -44,6 +44,7 @@ use FluxBB\Shared\Infrastructure\Database\QueryCollector;
 use FluxBB\Shared\Infrastructure\Database\QueryMonitor;
 use FluxBB\Shared\Infrastructure\Mail\FluxBBMailer;
 use FluxBB\Shared\Infrastructure\Persistence\DoctrineConfigRepository;
+use FluxBB\Shared\Infrastructure\Security\AdminAuthMiddleware;
 use FluxBB\Shared\Infrastructure\Security\CookieAuthProvider;
 use FluxBB\Shared\Infrastructure\Security\CsrfMiddleware;
 use FluxBB\Shared\Infrastructure\Security\PasswordHasher;
@@ -103,6 +104,7 @@ return [
         );
     }),
     CsrfMiddleware::class => autowire(),
+    AdminAuthMiddleware::class => autowire(),
     RateLimiterMiddleware::class => autowire(),
 
     // --- Database ---
@@ -169,7 +171,15 @@ return [
     HealthController::class => autowire(),
 
     // --- Event Subscribers ---
-    NotifySubscribersOnNewPost::class => autowire(),
+    NotifySubscribersOnNewPost::class => factory(function (PsrContainer $c) {
+        return new NotifySubscribersOnNewPost(
+            subscriptions: $c->get(SubscriptionRepository::class),
+            users: $c->get(UserRepository::class),
+            topics: $c->get(TopicRepository::class),
+            mailer: $c->get(FluxBBMailer::class),
+            appUrl: (string) $c->get('app.url'),
+        );
+    }),
     'event.subscriber.notify' => factory(function (PsrContainer $c) {
         $dispatcher = $c->get(EventDispatcherInterface::class);
         $dispatcher->addListener(

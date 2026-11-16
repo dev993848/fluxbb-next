@@ -61,7 +61,7 @@ docker compose up -d
 docker compose exec app php console.php migrations:migrate
 
 # 4. Open in browser
-open http://localhost:8080
+open http://localhost:8081
 # Email UI (MailHog): http://localhost:8025
 ```
 
@@ -93,7 +93,7 @@ docker compose exec app php console.php migrations:migrate
 docker compose exec app php console.php cache:warmup
 
 # 7. Check status
-curl -f http://localhost:8080/healthcheck
+curl -f http://localhost:8081/healthcheck
 ```
 
 ### docker-compose.yml (Production)
@@ -222,7 +222,7 @@ The `/healthcheck` endpoint checks:
 - Redis (via `redis-cli ping`)
 
 ```bash
-curl -f http://localhost:8080/healthcheck
+curl -f http://localhost:8081/healthcheck
 # HTTP 200 OK
 ```
 

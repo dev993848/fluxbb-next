@@ -48,6 +48,25 @@ class SecurityAuditTest extends TestCase
     }
 
     /**
+     * Authorization header must not bypass CSRF.
+     */
+    public function testCsrfIgnoresAuthorizationBypass(): void
+    {
+        $request = \Symfony\Component\HttpFoundation\Request::create('/post', 'POST');
+        $session = new \Symfony\Component\HttpFoundation\Session\Session(
+            new \Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage()
+        );
+        $request->setSession($session);
+        $request->headers->set('Authorization', 'Bearer x');
+
+        $csrf = new \FluxBB\Shared\Infrastructure\Security\CsrfMiddleware();
+        $result = $csrf->handle($request);
+
+        $this->assertNotNull($result);
+        $this->assertSame(403, $result->getStatusCode());
+    }
+
+    /**
      * Ensure RateLimiterMiddleware blocks excessive requests.
      */
     public function testRateLimiterBlocksExcess(): void

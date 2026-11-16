@@ -28,8 +28,16 @@ class DoctrineConnectionFactory
      */
     public static function create(ContainerInterface $container): Connection
     {
-        /** @var string $driver */
-        $driver = $container->get('db.driver');
+        /** @var string $driverRaw */
+        $driverRaw = $container->get('db.driver');
+        /** @var 'pdo_pgsql'|'pdo_mysql'|'pdo_sqlite'|'pdo_oci'|'pdo_sqlsrv' $driver */
+        $driver = match ($driverRaw) {
+            'pdo_mysql', 'mysqli' => 'pdo_mysql',
+            'pdo_sqlite', 'sqlite3' => 'pdo_sqlite',
+            'pdo_oci', 'oci8' => 'pdo_oci',
+            'pdo_sqlsrv', 'sqlsrv' => 'pdo_sqlsrv',
+            default => 'pdo_pgsql',
+        };
         /** @var string $host */
         $host = $container->get('db.host');
         /** @var string $port */

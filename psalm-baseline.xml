@@ -1,2 +1,237 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="6.0.0@b8e96bb617bf59382113b1b56cef751f648a7dc9"/>
+<files psalm-version="6.20.11@fca8e037ed356b9fc1afc213902e82dfad418eba">
+  <file src="src/Forum/Domain/Category.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function identity(): int]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Forum/Domain/Forum.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function identity(): int]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Forum/Infrastructure/Persistence/DoctrineForumRepository.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function findAllCategories(): array]]></code>
+      <code><![CDATA[public function findAllGroupedByCategory(): array]]></code>
+      <code><![CDATA[public function findByCategory(int $categoryId): array]]></code>
+      <code><![CDATA[public function findById(int $id): ?Forum]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Migrations/ImportCommand.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[protected function configure(): void]]></code>
+      <code><![CDATA[protected function execute(InputInterface $input, OutputInterface $output): int]]></code>
+    </MissingOverrideAttribute>
+    <UnnecessaryVarAnnotation>
+      <code><![CDATA['pdo_pgsql'|'pdo_mysql'|'pdo_sqlite'|'pdo_oci'|'pdo_sqlsrv']]></code>
+    </UnnecessaryVarAnnotation>
+  </file>
+  <file src="src/Moderation/Domain/Ban.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function identity(): int]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Moderation/Domain/BanCreated.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function aggregateId(): int]]></code>
+      <code><![CDATA[public function occurredAt(): \DateTimeImmutable]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Moderation/Domain/BanDeleted.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function aggregateId(): int]]></code>
+      <code><![CDATA[public function occurredAt(): \DateTimeImmutable]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Moderation/Domain/IpMask.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function equals(ValueObject $other): bool]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Moderation/Infrastructure/Cache/CachedBanRepository.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function delete(Ban $ban): void]]></code>
+      <code><![CDATA[public function findAllActive(\DateTimeImmutable $now): array]]></code>
+      <code><![CDATA[public function findById(int $id): ?Ban]]></code>
+      <code><![CDATA[public function findByIp(string $ip): array]]></code>
+      <code><![CDATA[public function save(Ban $ban): void]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Moderation/Infrastructure/Persistence/DoctrineBanRepository.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function delete(Ban $ban): void]]></code>
+      <code><![CDATA[public function findAllActive(\DateTimeImmutable $now): array]]></code>
+      <code><![CDATA[public function findById(int $id): ?Ban]]></code>
+      <code><![CDATA[public function findByIp(string $ip): array]]></code>
+      <code><![CDATA[public function save(Ban $ban): void]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Post/Domain/Post.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function identity(): int]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Post/Domain/PostEdited.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function aggregateId(): int]]></code>
+      <code><![CDATA[public function occurredAt(): \DateTimeImmutable]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Post/Infrastructure/Persistence/DoctrinePostRepository.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function countByTopic(int $topicId): int]]></code>
+      <code><![CDATA[public function delete(Post $post): void]]></code>
+      <code><![CDATA[public function findById(int $id): ?Post]]></code>
+      <code><![CDATA[public function findByTopic(int $topicId, int $page = 1, int $perPage = 20): array]]></code>
+      <code><![CDATA[public function findLatestByForum(int $forumId, int $limit = 15): array]]></code>
+      <code><![CDATA[public function save(Post $post): void]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Search/Infrastructure/Persistence/PostgresSearchRepository.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function indexPost(int $postId): void]]></code>
+      <code><![CDATA[public function rebuildIndex(): int]]></code>
+      <code><![CDATA[public function search(SearchQuery $query): array]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Shared/Infrastructure/Bus/SimpleEventDispatcher.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function dispatch(object $event): object]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Shared/Infrastructure/Cache/CacheFactory.php">
+    <UndefinedConstant>
+      <code><![CDATA[FLUXBB_ROOT]]></code>
+    </UndefinedConstant>
+  </file>
+  <file src="src/Shared/Infrastructure/Cache/FileCache.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function clear(): bool]]></code>
+      <code><![CDATA[public function delete(string $key): bool]]></code>
+      <code><![CDATA[public function deleteMultiple(iterable $keys): bool]]></code>
+      <code><![CDATA[public function get(string $key, mixed $default = null): mixed]]></code>
+      <code><![CDATA[public function getMultiple(iterable $keys, mixed $default = null): iterable]]></code>
+      <code><![CDATA[public function has(string $key): bool]]></code>
+      <code><![CDATA[public function set(string $key, mixed $value, int|\DateInterval|null $ttl = null): bool]]></code>
+      <code><![CDATA[public function setMultiple(iterable $values, int|\DateInterval|null $ttl = null): bool]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Shared/Infrastructure/Database/DoctrineConnectionFactory.php">
+    <InvalidArgument>
+      <code><![CDATA[$connectionParams]]></code>
+    </InvalidArgument>
+    <UnnecessaryVarAnnotation>
+      <code><![CDATA['pdo_pgsql'|'pdo_mysql'|'pdo_sqlite'|'pdo_oci'|'pdo_sqlsrv']]></code>
+    </UnnecessaryVarAnnotation>
+  </file>
+  <file src="src/Shared/Infrastructure/Database/QueryMonitor.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function log(mixed $level, string|\Stringable $message, array $context = []): void]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Shared/Infrastructure/Kernel.php">
+    <UndefinedConstant>
+      <code><![CDATA[FLUXBB_ROOT]]></code>
+    </UndefinedConstant>
+  </file>
+  <file src="src/Shared/Infrastructure/Persistence/DoctrineConfigRepository.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function delete(string $key): void]]></code>
+      <code><![CDATA[public function find(string $key): ?string]]></code>
+      <code><![CDATA[public function findAll(): array]]></code>
+      <code><![CDATA[public function upsert(string $key, string $value): void]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Shared/Infrastructure/Time/SystemClock.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function now(): \DateTimeImmutable]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Subscription/Domain/TopicSubscription.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function aggregateId(): UserId { return $this->userId; }]]></code>
+      <code><![CDATA[public function aggregateId(): UserId { return $this->userId; }]]></code>
+      <code><![CDATA[public function identity(): int]]></code>
+      <code><![CDATA[public function occurredAt(): \DateTimeImmutable { return $this->occurredAt; }]]></code>
+      <code><![CDATA[public function occurredAt(): \DateTimeImmutable { return $this->occurredAt; }]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Subscription/Infrastructure/Persistence/DoctrineSubscriptionRepository.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function delete(TopicSubscription $subscription): void]]></code>
+      <code><![CDATA[public function findByTopic(int $topicId): array]]></code>
+      <code><![CDATA[public function findByUser(UserId $userId): array]]></code>
+      <code><![CDATA[public function findByUserAndTopic(UserId $userId, int $topicId): ?TopicSubscription]]></code>
+      <code><![CDATA[public function save(TopicSubscription $subscription): void]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Topic/Domain/Topic.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function identity(): int]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Topic/Domain/TopicStateChanged.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function aggregateId(): int]]></code>
+      <code><![CDATA[public function occurredAt(): \DateTimeImmutable]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/Topic/Infrastructure/Persistence/DoctrineTopicRepository.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function delete(Topic $topic): void]]></code>
+      <code><![CDATA[public function findByForum(int $forumId): array]]></code>
+      <code><![CDATA[public function findById(int $id): ?Topic]]></code>
+      <code><![CDATA[public function save(Topic $topic): void]]></code>
+      <code><![CDATA[public function updateLastPost(int $topicId, int $postId, int $posterId, string $poster, \DateTimeImmutable $postedAt): void]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/User/Domain/Email.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function equals(ValueObject $other): bool]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/User/Domain/PasswordChanged.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function aggregateId(): UserId]]></code>
+      <code><![CDATA[public function occurredAt(): \DateTimeImmutable]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/User/Domain/User.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function identity(): UserId]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/User/Domain/UserId.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function equals(ValueObject $other): bool]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/User/Domain/UserLoggedIn.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function aggregateId(): UserId]]></code>
+      <code><![CDATA[public function occurredAt(): \DateTimeImmutable]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/User/Domain/UserRegistered.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function aggregateId(): UserId]]></code>
+      <code><![CDATA[public function occurredAt(): \DateTimeImmutable]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/User/Domain/Username.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function equals(ValueObject $other): bool]]></code>
+    </MissingOverrideAttribute>
+  </file>
+  <file src="src/User/Infrastructure/Persistence/DoctrineUserRepository.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function delete(User $user): void]]></code>
+      <code><![CDATA[public function findAll(): array]]></code>
+      <code><![CDATA[public function findByEmail(Email $email): ?User]]></code>
+      <code><![CDATA[public function findById(UserId $id): ?User]]></code>
+      <code><![CDATA[public function findByUsername(Username $username): ?User]]></code>
+      <code><![CDATA[public function save(User $user): void]]></code>
+    </MissingOverrideAttribute>
+  </file>
+</files>

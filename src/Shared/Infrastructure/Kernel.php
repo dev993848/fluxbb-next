@@ -5,6 +5,12 @@ declare(strict_types=1);
 namespace FluxBB\Shared\Infrastructure;
 
 use DI\ContainerBuilder;
+use FluxBB\Shared\Infrastructure\Security\AdminAuthMiddleware;
+use FluxBB\Shared\Infrastructure\Security\CookieAuthProvider;
+use FluxBB\Shared\Infrastructure\Security\CsrfMiddleware;
+use FluxBB\Shared\Infrastructure\Security\RateLimiterMiddleware;
+use FluxBB\User\Domain\UserId;
+use FluxBB\User\Domain\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -12,15 +18,18 @@ use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
+use Twig\Environment as TwigEnvironment;
 
 /**
  * Application Kernel — Production-Grade.
  *
  * Extended with:
  * - Session support (Symfony HttpFoundation Session)
+ * - Remember-me cookie restore (HMAC bound to password hash)
  * - CSRF protection on state-changing requests
+ * - Admin authorization on /admin routes
  * - Rate limiting per IP
  * - Security headers (CSP, X-Frame-Options, HSTS)
  * - Proper error rendering in prod mode
@@ -42,12 +51,13 @@ class Kernel
     public function handle(Request $request): Response
     {
         try {
-            // 1. Start session
+            // 1. Start session + restore remember-me if needed
             $session = $this->getSession();
             $request->setSession($session);
             if (!$session->isStarted()) {
                 $session->start();
             }
+            $this->restoreRememberMe($request);
 
             // 2. Set up routing context
             $context = new RequestContext();
@@ -58,27 +68,38 @@ class Kernel
             $matcher = new UrlMatcher($routes, $context);
             $parameters = $matcher->match($request->getPathInfo());
 
-            // 4. CSRF check for POST/PUT/DELETE
-            $csrf = $this->container->get(\FluxBB\Shared\Infrastructure\Security\CsrfMiddleware::class);
+            $routeName = (string) ($parameters['_route'] ?? '');
+
+            // 4. Admin authorization
+            if (str_starts_with($routeName, 'admin.') || str_starts_with($request->getPathInfo(), '/admin')) {
+                /** @var AdminAuthMiddleware $adminAuth */
+                $adminAuth = $this->container->get(AdminAuthMiddleware::class);
+                $adminResponse = $adminAuth->handle($request);
+                if ($adminResponse !== null) {
+                    return $this->withSecurityHeaders($adminResponse, $request);
+                }
+            }
+
+            // 5. CSRF check for POST/PUT/DELETE
+            /** @var CsrfMiddleware $csrf */
+            $csrf = $this->container->get(CsrfMiddleware::class);
             $csrfResponse = $csrf->handle($request);
             if ($csrfResponse !== null) {
-                return $csrfResponse;
+                return $this->withSecurityHeaders($csrfResponse, $request);
             }
 
-            // 5. Rate limiting
-            $rateLimiter = $this->container->get(\FluxBB\Shared\Infrastructure\Security\RateLimiterMiddleware::class);
+            // 6. Rate limiting
+            /** @var RateLimiterMiddleware $rateLimiter */
+            $rateLimiter = $this->container->get(RateLimiterMiddleware::class);
             $rateResponse = $rateLimiter->handle($request);
             if ($rateResponse !== null) {
-                return $rateResponse;
+                return $this->withSecurityHeaders($rateResponse, $request);
             }
-
-            // Extract route name for Twig globals
-            $routeName = $parameters['_route'] ?? '';
 
             // Set Twig globals for all templates
             $this->setTwigGlobals($routeName, $request);
 
-            // 6. Resolve and call controller
+            // 7. Resolve and call controller
             $controller = $parameters['_controller'];
             unset($parameters['_controller'], $parameters['_route']);
 
@@ -91,10 +112,7 @@ class Kernel
                 $response = new Response((string) $response);
             }
 
-            // 7. Add security headers
-            $this->addSecurityHeaders($response, $request);
-
-            return $response;
+            return $this->withSecurityHeaders($response, $request);
         } catch (ResourceNotFoundException $e) {
             $response = new Response($this->renderError('404 Not Found'), 404);
         } catch (MethodNotAllowedException $e) {
@@ -106,8 +124,7 @@ class Kernel
             $response = new Response($this->renderError('500 Internal Server Error'), 500);
         }
 
-        $this->addSecurityHeaders($response, $request);
-        return $response;
+        return $this->withSecurityHeaders($response, $request);
     }
 
     public function terminate(Request $request, Response $response): void
@@ -170,16 +187,64 @@ class Kernel
     }
 
     /**
-     * Set Twig globals shared by all templates.
+     * Restore session from remember-me cookie when session has no user_id.
      */
-    private function setTwigGlobals(string $currentRoute, Request $request): void
+    private function restoreRememberMe(Request $request): void
     {
-        if (!$this->container->has(\Twig\Environment::class)) {
+        $session = $request->getSession();
+        if ($session->has('user_id')) {
+            return;
+        }
+
+        if (!$this->container->has(CookieAuthProvider::class) || !$this->container->has(UserRepository::class)) {
+            return;
+        }
+
+        /** @var CookieAuthProvider $cookieAuth */
+        $cookieAuth = $this->container->get(CookieAuthProvider::class);
+            $cookieRaw = $request->cookies->get($cookieAuth->getRememberCookieName());
+            $raw = is_string($cookieRaw) ? $cookieRaw : '';
+            if ($raw === '') {
+                return;
+            }
+
+        $peekId = $cookieAuth->peekUserId($raw);
+        if ($peekId === null) {
             return;
         }
 
         try {
-            $twig = $this->container->get(\Twig\Environment::class);
+            /** @var UserRepository $users */
+            $users = $this->container->get(UserRepository::class);
+            $user = $users->findById(new UserId($peekId));
+            if ($user === null) {
+                return;
+            }
+
+            if ($cookieAuth->validateCookie($raw, $user->getPasswordHash()) === null) {
+                return;
+            }
+
+            $session->set('user_id', $user->getId()->toInt());
+            $session->set('username', $user->getUsername()->toString());
+            $session->set('group_id', $user->getGroupId()->value);
+        } catch (\Throwable) {
+            // Ignore restore failures (e.g. DB unavailable during early boot)
+        }
+    }
+
+    /**
+     * Set Twig globals shared by all templates.
+     */
+    private function setTwigGlobals(string $currentRoute, Request $request): void
+    {
+        if (!$this->container->has(TwigEnvironment::class)) {
+            return;
+        }
+
+        try {
+            /** @var TwigEnvironment $twig */
+            $twig = $this->container->get(TwigEnvironment::class);
             $session = $request->getSession();
             $twig->addGlobal('current_route', $currentRoute);
             $twig->addGlobal('locale', 'en');
@@ -224,11 +289,18 @@ class Kernel
 
             $this->session = \FluxBB\Shared\Infrastructure\Security\SessionFactory::create(
                 connection: $this->environment === 'prod' ? $dbConnection : null,
-                cookieName: $cookieName,
+                cookieName: is_string($cookieName) ? $cookieName : 'fluxbb_cookie',
             );
         }
 
         return $this->session;
+    }
+
+    private function withSecurityHeaders(Response $response, Request $request): Response
+    {
+        $this->addSecurityHeaders($response, $request);
+
+        return $response;
     }
 
     private function addSecurityHeaders(Response $response, Request $request): void

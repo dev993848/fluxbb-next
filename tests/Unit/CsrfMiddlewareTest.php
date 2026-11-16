@@ -55,4 +55,16 @@ class CsrfMiddlewareTest extends TestCase
         $result = $this->csrf->handle($request);
         $this->assertNull($result); // Allowed
     }
+
+    public function testAuthorizationHeaderDoesNotBypassCsrf(): void
+    {
+        $request = Request::create('/admin/options', 'POST');
+        $session = new Session(new MockArraySessionStorage());
+        $request->setSession($session);
+        $request->headers->set('Authorization', 'Bearer anything');
+
+        $result = $this->csrf->handle($request);
+        $this->assertNotNull($result);
+        $this->assertSame(403, $result->getStatusCode());
+    }
 }

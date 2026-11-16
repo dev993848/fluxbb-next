@@ -28,6 +28,7 @@ declare(strict_types=1);
  * - MAILER_DSN:    Mailer DSN (smtp://user:pass@mailhost:25, native://default)
  * - MAILER_FROM:   Default sender email
  * - MAILER_FROM_NAME: Default sender name
+ * - APP_URL:       Public base URL (https://forum.example.com) for email links
  */
 
 use function DI\create;
@@ -35,8 +36,9 @@ use function DI\get;
 
 return [
     // --- Environment ---
-    'env' => $_SERVER['APP_ENV'] ?? 'prod',
-    'debug' => (bool) ($_SERVER['APP_DEBUG'] ?? false),
+    'env' => $_SERVER['APP_ENV'] ?? $_ENV['APP_ENV'] ?? 'prod',
+    'debug' => (bool) ($_SERVER['APP_DEBUG'] ?? $_ENV['APP_DEBUG'] ?? false),
+    'app.url' => rtrim((string) ($_SERVER['APP_URL'] ?? $_ENV['APP_URL'] ?? 'http://localhost'), '/'),
 
     // --- Database ---
     'db.driver' => $_SERVER['DB_DRIVER'] ?? 'pdo_pgsql',

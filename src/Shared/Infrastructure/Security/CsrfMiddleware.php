@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
  * CSRF protection middleware.
  *
  * Generates and validates CSRF tokens for state-changing requests (POST, PUT, DELETE).
- * Uses session-based tokens with per-form nonces for double submission.
+ * Uses session-based tokens with double-submit.
  */
 class CsrfMiddleware
 {
@@ -31,7 +31,9 @@ class CsrfMiddleware
             $session->set(self::SESSION_KEY, $token);
         }
 
-        return $session->get(self::SESSION_KEY);
+        $token = $session->get(self::SESSION_KEY);
+
+        return is_string($token) ? $token : '';
     }
 
     /**
@@ -48,13 +50,21 @@ class CsrfMiddleware
         }
 
         $expected = $session->get(self::SESSION_KEY);
-        $actual = $request->request->get('_csrf_token', $request->headers->get('X-CSRF-Token', ''));
+        if (!is_string($expected) || $expected === '') {
+            return false;
+        }
 
-        return hash_equals((string) $expected, (string) $actual);
+        $fromRequest = $request->request->get('_csrf_token');
+        $fromHeader = $request->headers->get('X-CSRF-Token');
+        $actual = is_string($fromRequest) && $fromRequest !== ''
+            ? $fromRequest
+            : (is_string($fromHeader) ? $fromHeader : '');
+
+        return hash_equals($expected, $actual);
     }
 
     /**
-     * Add CSRF protection headers and check on POST/PUT/DELETE requests.
+     * Check CSRF on POST/PUT/PATCH/DELETE requests.
      *
      * @param Request $request The incoming request
      * @return Response|null Null if allowed, 403 Response if blocked
@@ -63,13 +73,7 @@ class CsrfMiddleware
     {
         $method = strtoupper($request->getMethod());
 
-        // Only check state-changing methods
         if (!in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'], true)) {
-            return null;
-        }
-
-        // Skip CSRF for API-like requests with a bearer token or API key
-        if ($request->headers->has('Authorization')) {
             return null;
         }
 

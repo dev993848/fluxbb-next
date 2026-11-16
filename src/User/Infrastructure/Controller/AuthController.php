@@ -142,12 +142,12 @@ class AuthController
                         $cookieValue = $this->cookieAuth->generateCookie($user);
                         $response->headers->setCookie(
                             new \Symfony\Component\HttpFoundation\Cookie(
-                                name: 'fluxbb_remember',
+                                name: $this->cookieAuth->getRememberCookieName(),
                                 value: $cookieValue,
                                 expire: time() + 1209600, // 14 days
                                 path: '/',
                                 domain: null,
-                                secure: true,
+                                secure: $request->isSecure(),
                                 httpOnly: true,
                                 sameSite: \Symfony\Component\HttpFoundation\Cookie::SAMESITE_LAX,
                             )
@@ -181,7 +181,7 @@ class AuthController
         $session->invalidate();
 
         $response = new Response('', 302, ['Location' => '/']);
-        $response->headers->clearCookie('fluxbb_remember');
+        $response->headers->clearCookie($this->cookieAuth->getRememberCookieName());
 
         return $response;
     }

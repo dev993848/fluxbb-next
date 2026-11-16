@@ -32,14 +32,21 @@ class AdminPermissionsController
         // Build matrix: group_id => forum_id => permissions
         $matrix = [];
         foreach ($perms as $perm) {
-            $matrix[(int) $perm['group_id']][(int) $perm['forum_id']] = $perm;
+            $groupId = (int) $perm['group_id'];
+            $forumId = (int) $perm['forum_id'];
+            $matrix[$groupId][$forumId] = $perm;
+        }
+
+        $defaultGid = 0;
+        if (isset($groups[0]['g_id'])) {
+            $defaultGid = (int) $groups[0]['g_id'];
         }
 
         $content = $this->twig->render('admin/permissions.html.twig', [
             'groups' => $groups,
             'forums' => $forums,
             'matrix' => $matrix,
-            'selected_gid' => (int) $request->get('group_id', $groups[0]['g_id'] ?? 0),
+            'selected_gid' => (int) $request->query->get('group_id', (string) $defaultGid),
             '_csrf_token' => $this->csrf->generateToken($request),
         ]);
         return new Response($content);
@@ -48,9 +55,14 @@ class AdminPermissionsController
     public function save(Request $request): Response
     {
         $groupId = (int) $request->request->get('group_id', 0);
-        $forumPerms = $request->request->all('perms', []);
+        /** @var array<string|int, mixed> $forumPerms */
+        $forumPerms = $request->request->all('perms');
 
         foreach ($forumPerms as $forumId => $permData) {
+            if (!is_array($permData)) {
+                continue;
+            }
+
             $this->db->executeStatement(
                 'INSERT INTO forum_forum_perms (group_id, forum_id, read_forum, post_replies, post_topics)
                  VALUES (?, ?, ?, ?, ?)

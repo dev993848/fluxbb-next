@@ -4,28 +4,23 @@ declare(strict_types=1);
 
 namespace FluxBB\Subscription\Infrastructure\Mail;
 
+use FluxBB\Shared\Infrastructure\Mail\FluxBBMailer;
 use FluxBB\Subscription\Domain\TopicSubscription;
 
 /**
- * Email notification service for topic subscriptions.
+ * Thin adapter kept for BC — delegates to FluxBBMailer.
  *
- * Sends HTML email notifications to subscribers when a new reply is posted.
- * In production, this would use Symfony Mailer.
+ * @deprecated Use FluxBBMailer / NotifySubscribersOnNewPost instead.
  */
 class SubscriptionMailer
 {
-    /** @param string $fromEmail Sender email address */
     public function __construct(
-        private readonly string $fromEmail = 'noreply@fluxbb.local',
+        private readonly FluxBBMailer $mailer,
+        private readonly string $appUrl = '',
     ) {}
 
     /**
      * Send a notification about a new reply.
-     *
-     * @param TopicSubscription $subscription The subscription
-     * @param string $toEmail Recipient email
-     * @param string $topicSubject Topic subject
-     * @param int $topicId Topic ID for link
      */
     public function sendNewReplyNotification(
         TopicSubscription $subscription,
@@ -33,16 +28,21 @@ class SubscriptionMailer
         string $topicSubject,
         int $topicId,
     ): void {
+        $baseUrl = rtrim($this->appUrl !== '' ? $this->appUrl : (string) ($_ENV['APP_URL'] ?? 'http://localhost'), '/');
         $subject = sprintf('New reply: %s', $topicSubject);
         $body = sprintf(
-            "Hello!\n\nThere's a new reply in the topic \"%s\" that you're subscribed to.\n\n" .
-            "View it here: %s/topic/%d\n\n--\nFluxBB Forum",
+            "<p>There's a new reply in the topic \"%s\".</p><p><a href=\"%s/topic/%d\">View</a></p>",
+            htmlspecialchars($topicSubject),
+            htmlspecialchars($baseUrl),
+            $topicId
+        );
+        $altBody = sprintf(
+            "There's a new reply in the topic \"%s\".\nView: %s/topic/%d",
             $topicSubject,
-            'https://your-forum.com',
+            $baseUrl,
             $topicId
         );
 
-        // TODO: Use Symfony Mailer in production
-        error_log(sprintf('[FluxBB Mail] To: %s, Subject: %s', $toEmail, $subject));
+        $this->mailer->send($toEmail, $subject, $body, $altBody);
     }
 }

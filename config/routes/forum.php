@@ -74,13 +74,17 @@ $routes->add('post.edit', new Route('/post/{id}/edit', [
     '_controller' => [\FluxBB\Post\Infrastructure\Controller\PostController::class, 'edit'],
 ], ['id' => '\d+'], [], '', [], ['POST']));
 
-// --- Subscription ---
-$routes->add('subscription.subscribe', new Route('/topic/{topicId}/subscribe/{userId}', [
+// --- Subscription (POST only; user comes from session, not URL) ---
+$routes->add('subscription.subscribe', new Route('/topic/{topicId}/subscribe', [
     '_controller' => [\FluxBB\Subscription\Infrastructure\Controller\SubscriptionController::class, 'subscribe'],
-], ['topicId' => '\d+', 'userId' => '\d+']));
-$routes->add('subscription.unsubscribe', new Route('/topic/{topicId}/unsubscribe/{userId}', [
+], ['topicId' => '\d+'], [], '', [], ['POST']));
+$routes->add('subscription.unsubscribe', new Route('/topic/{topicId}/unsubscribe', [
     '_controller' => [\FluxBB\Subscription\Infrastructure\Controller\SubscriptionController::class, 'unsubscribe'],
-], ['topicId' => '\d+', 'userId' => '\d+']));
+], ['topicId' => '\d+'], [], '', [], ['POST']));
+// Legacy signed unsubscribe link from emails (token-less GET kept for mail links; still requires session match)
+$routes->add('subscription.unsubscribe.link', new Route('/topic/{topicId}/unsubscribe/{userId}', [
+    '_controller' => [\FluxBB\Subscription\Infrastructure\Controller\SubscriptionController::class, 'unsubscribeLink'],
+], ['topicId' => '\d+', 'userId' => '\d+'], [], '', [], ['GET']));
 
 // --- Admin Dashboard ---
 $routes->add('admin.dashboard', new Route('/admin', [
@@ -93,7 +97,7 @@ $routes->add('admin.users', new Route('/admin/users', [
 ], [], [], '', [], ['GET']));
 $routes->add('admin.users.delete', new Route('/admin/users/delete/{id}', [
     '_controller' => [\FluxBB\Admin\Infrastructure\Controller\AdminUserController::class, 'delete'],
-], ['id' => '\d+']));
+], ['id' => '\d+'], [], '', [], ['POST']));
 
 // --- Admin: Options ---
 $routes->add('admin.options', new Route('/admin/options', [
@@ -112,7 +116,7 @@ $routes->add('admin.bans.create', new Route('/admin/bans', [
 ], [], [], '', [], ['POST']));
 $routes->add('admin.bans.delete', new Route('/admin/bans/delete/{id}', [
     '_controller' => [\FluxBB\Admin\Infrastructure\Controller\AdminBanController::class, 'delete'],
-], ['id' => '\d+']));
+], ['id' => '\d+'], [], '', [], ['POST']));
 
 // --- Admin: Groups ---
 $routes->add('admin.groups', new Route('/admin/groups', [
@@ -131,7 +135,7 @@ $routes->add('admin.censoring.add', new Route('/admin/censoring', [
 ], [], [], '', [], ['POST']));
 $routes->add('admin.censoring.delete', new Route('/admin/censoring/delete/{id}', [
     '_controller' => [\FluxBB\Admin\Infrastructure\Controller\AdminCensoringController::class, 'delete'],
-], ['id' => '\d+']));
+], ['id' => '\d+'], [], '', [], ['POST']));
 
 // --- Admin: Permissions ---
 $routes->add('admin.permissions', new Route('/admin/permissions', [
